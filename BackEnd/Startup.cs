@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using BackEnd.Controllers;
 using BackEnd.Data;
+using BackEnd.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -38,6 +39,8 @@ namespace BackEnd
                 options.UseSqlite("Data Source=conferences.db");
   
             });
+
+            services.AddScoped<SpeakerRepository, SpeakerRepository>();
 
             services.AddControllers();
 

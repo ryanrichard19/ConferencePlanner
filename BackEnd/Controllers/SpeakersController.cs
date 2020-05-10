@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Data;
+using BackEnd.Repository;
 
 namespace BackEnd.Controllers
 {
@@ -15,20 +16,20 @@ namespace BackEnd.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public SpeakersController(ApplicationDbContext context)
+        private readonly SpeakerRepository _speakerRepository;
+
+        public SpeakersController(ApplicationDbContext context, SpeakerRepository speakerRepository)
         {
             _context = context;
+            _speakerRepository = speakerRepository;
         }
 
         // GET: api/Speakers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ConferenceDTO.SpeakerResponse>>> GetSpeakers()
         {
-            var speakers = await _context.Speakers.AsNoTracking()
-                                    .Include(s => s.SessionSpeakers)
-                                        .ThenInclude(ss => ss.Session)
-                                    .Select(s => s.MapSpeakerResponse())
-                                    .ToListAsync();
+            var speakersList = await _speakerRepository.ListAsync();
+            var speakers = speakersList.Select(s => s.MapSpeakerResponse()).ToList();
             return speakers;
         }
 
@@ -36,10 +37,7 @@ namespace BackEnd.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ConferenceDTO.SpeakerResponse>> GetSpeaker(int id)
         {
-            var speaker = await _context.Speakers.AsNoTracking()
-                                     .Include(s => s.SessionSpeakers)
-                                         .ThenInclude(ss => ss.Session)
-                                     .SingleOrDefaultAsync(s => s.Id == id);
+            var speaker = await _speakerRepository.GetByIdAsync<Speaker>(id);
             if (speaker == null)
             {
                 return NotFound();

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ConferenceDTO
 {
-    public class Speaker
+    public class Speaker : BaseEntity
     {
-        public int Id { get; set; }
 
         /// <summary>
         /// The name of the speaker

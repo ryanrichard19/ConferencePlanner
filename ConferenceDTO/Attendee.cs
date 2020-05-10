@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ConferenceDTO
 {
-    public class Attendee
+    public class Attendee : BaseEntity
     {
-
-        public int Id { get; set; }
 
         [Required]
         [StringLength(200)]
